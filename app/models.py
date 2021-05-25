@@ -4,11 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .bot_handler import BotStarter
 import telebot
-#from collections import OrderedDict
-#from dictionaryfield import DictionaryField
-#from tablefield.fields import TableField
-#from hashid_field import HashidField
-#from matrix_field import MatrixField
+
 from jsonfield import JSONField
 
 class Post(models.Model):

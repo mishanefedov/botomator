@@ -12,29 +12,6 @@ import threading
 from .bot_handler import BotStarter, BotStopper
 
 
-# async methods
-
-@sync_to_async
-def start_all_bots():
-    while True:
-
-        data = Post.objects.all()
-        for post in data:
-            api = post.api
-            bot = telebot.TeleBot(token = api)
-            @bot.message_handler(commands=['start'])
-            def send_welcome(message):
-                bot.reply_to(message,'salam from ')
-
-            try:
-                bot.polling()
-            except Exception:
-                time.sleep(1)
-        print('Sleeping 10 seconds')
-        time.sleep(10)
-
-
-
 
 
 #Views
@@ -51,11 +28,10 @@ class StartBot(threading.Thread, LoginRequiredMixin, UserPassesTestMixin, Detail
 
     def test_func(self):
         bot = self.get_object()
-        print(bot.running)
+        print(bot.api)
         bot_data = Post.objects.get(api = bot.api)
         bot_data.running = True
         bot_data.save()
-        print(bot.running)
         bot_p = telebot.TeleBot(token = bot.api)
         BotStarter(bot_p, bot.api, bot_data.message_pairs).start()
         return True
