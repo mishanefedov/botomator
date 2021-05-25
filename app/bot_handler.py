@@ -19,24 +19,12 @@ class BotStarter(threading.Thread):
         return self
     
     def run(self):
-        #api = self.api
-        #r = requests.get(f'https://api.telegram.org/bot{api}/getUpdates')
-        #data = r.json()
-        #message = 'salam'
-        #chat_id=data['result'][0]['message']['chat']['id']
-        #requests.post(f'https://api.telegram.org/bot{api}/sendMessage?text={message}&chat_id={chat_id}')
-        #data = self.json[0]
-        #test_string = 'salamchik'
-        #if test_string in data:
-        #    print (data[test_string])
-        #print(self.json[0]['salamchik'])
         bot = self.total
         @bot.message_handler(commands=['start', 'help'])
         def send_welcome(message):
 	        bot.reply_to(message, "Howdy, how are you doing?")
         
         def my_scheduled_job():
-    
             try:
                 bot.polling()
             except Exception as e:
