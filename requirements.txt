@@ -1,1 +1,10 @@
 Django~=2.2.4
+django-crispy-forms
+django-dictionaryfield
+django-hashid-field
+django-crontab
+django-cron
+django-tablefield
+image
+telegram
+pyTelegramBotApi
