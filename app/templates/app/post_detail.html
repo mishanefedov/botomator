@@ -23,6 +23,28 @@
             <p class="article-content">Api: {{ object.api }}</p>
             <p class="article-content">name_id: {{ object.name_id }}</p>
         </div>
+        <script>
+            var loc = window.location
+            var wsStart = 'ws://'
+            if(loc.protocol == 'https:'){
+                wsStart = 'wss://'
+            }
+            var endpoint = wsStart + loc.host + loc.pathname
+            var socket = new WebSocket(endpoint)
+            console.log('SALAM')
+            socket.onmessage = function(e){
+                console.log('message',e)
+            }
+            socket.onopen = function(e){
+                console.log('open',e)
+            }
+            socket.onerror = function(e){
+                console.log('error',e)
+            }
+            socket.onclose = function(e){
+                console.log('close',e)
+            }
+        </script>
 </article>
   
 {% endblock content %}  

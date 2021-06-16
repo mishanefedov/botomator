@@ -34,15 +34,15 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'app.apps.AppConfig',
     'crispy_forms',
+    'django.core.mail',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dictionaryfield',
-    'tablefield',
     'django_crontab',
+    'channels',
 ]
 HASHID_FIELD_SALT = 'sfpmber9w0gvindxlfogpodpvnsr0f9wehg9uwshdifjp0rßq2ß308423'
 #THREADING
@@ -79,6 +79,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+ASGI_APPLICATION = 'mysite.routing.application'
 
 
 # Database
@@ -139,9 +140,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'app-home'
 LOGIN_URL = 'login'
 
-EMAIL_BACKEND = 'django.core.mail.backend.smtp.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'send-emails')
+#EMAIL_BACKEND = 'django.core.mail.backend.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mishanefedov2002@gmail.com'
+EMAIL_HOST_USER = 'vapeduess@gmail.com'
 EMAIL_HOST_PASSWORD = ''
