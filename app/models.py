@@ -1,20 +1,23 @@
-from django.db import models
+from django.db import models, connection
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .bot_handler import BotStarter
-import telebot
 
 from django.db import models
 
 from django.conf import settings
 from django.db.models import Q
 
-from users.models import Profile
-
 from jsonfield import JSONField
 
 #https://www.youtube.com/watch?v=RVH05S1qab8 30min<
+
+
+class PostManager(models.Manager):
+    
+    def get_bot(self, user, bot):
+        bot = Post.objects.get(id = bot)
+        return bot
 
 class Post(models.Model):
     api = models.CharField(max_length=100)
@@ -25,7 +28,10 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     running = models.BooleanField(default = False)
     
+
     message_pairs = JSONField(default=list)
+    objects = PostManager()
+
 
     def __str__(self):
         return self.name
@@ -38,6 +44,11 @@ class Post(models.Model):
         
 
 
+class BotHandler(models.Model):
+    def save(self,*args, **kwargs):
+        super().save(*args, **kwargs)
+
+
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class ThreadManager(models.Manager):
@@ -48,18 +59,25 @@ class ThreadManager(models.Manager):
         return qs
 
     def get_or_new(self, user, bot): # get_or_create
-        print('SEARCHING FOR THREAD... ')
-        username = user.username
-        if username == bot:
-            return None
+        bot_id = bot
+        bot = Post.objects.get(id=bot)
+        #print('SEARCHING FOR THREAD... ')
+        #print(Post.objects.only('id').all())
+        #print(Post.objects.get(id=bot))
+        #Thread.objects.create(first=user, second=bot)
+        #print(Thread.objects.all())
+    
         print('1...')
-        qlookup1 = Q(first__username=username) & Q(second__username=bot)
-        qlookup2 = Q(first__username=bot) & Q(second__username=username)
         print('2...')
-        print('SELF QUERYSET', self.get_queryset().count())
+        #Thread.objects.filter(id = 1).delete()
+        Thread.objects.filter(id = 3).delete()
+        qs = Thread.objects.filter(
+            first = user,
+            second = bot
+        )
 
-        qs = self.get_queryset().distinct()
-        print(qs)
+        print('QS: ', qs)
+        print(connection.queries[-1])
         if qs.count() == 1:
             print('3...')
             return qs.first(), False
@@ -68,18 +86,20 @@ class ThreadManager(models.Manager):
             return qs.order_by('timestamp').first(), False
         else:
             print('5...')
-            user2 = Post.objects.get(id=bot)
-            print(user2)
-            print('555...')
-            print(user2)
-            if user != user2:
-                obj = self.model(
-                        first=user, 
-                        second=user2
-                    )
-                obj.save()
-                return obj, True
-            return None, False
+            new_relation = Thread.objects.create(
+                first=user,
+                second=bot,
+                id = bot_id
+            )
+            print('...........')
+            print(new_relation)
+            print(new_relation.id)
+            print(new_relation.first)
+            print(new_relation.second)
+            print('6....')
+            new_relation.id = bot_id
+            new_relation.save()
+            return new_relation, False
 
 
 

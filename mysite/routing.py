@@ -10,7 +10,8 @@ application = ProtocolTypeRouter({
         AuthMiddlewareStack(
             URLRouter(
                 [
-                    url(r'^post/(?P<username>[\w.@+-]+)/$', Consumer()),
+                    url(r'^post/(?P<username>[\w.@+-]+)/start$', Consumer()),
+                    url(r'^post/(?P<username>[\w.@+-]+)/stop$', Consumer()),
                 ]
             )
         )

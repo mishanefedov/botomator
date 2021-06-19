@@ -54,6 +54,17 @@ class StopBot(threading.Thread, LoginRequiredMixin, UserPassesTestMixin, DetailV
         print('salamalekum')
         return True
 
+class PassView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Post
+
+    def test_func(self):
+        bot = self.get_object()
+        print(bot.running)
+        to_save = Post.objects.get(api = bot.api)
+        to_save.running = not bot.running
+        to_save.save()
+        print(bot.running)
+        return True
 
 class PostListView(ListView):
     model = Post
