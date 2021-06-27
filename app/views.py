@@ -9,7 +9,7 @@ import requests
 import time
 from asgiref.sync import sync_to_async
 import threading
-from .bot_handler import BotStarter, BotStopper
+
 
 
 
@@ -21,38 +21,6 @@ def home(request):
     }
     return render(request, 'app/home.html', context)
 
-class StartBot(threading.Thread, LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    model = Post
-    success_url = '/'
-
-
-    def test_func(self):
-        bot = self.get_object()
-        print(bot.api)
-        bot_data = Post.objects.get(api = bot.api)
-        bot_data.running = True
-        bot_data.save()
-        bot_p = telebot.TeleBot(bot.api)
-        BotStarter(bot_p, bot.api, bot_data.message_pairs).start()
-        return True
-    
-
-class StopBot(threading.Thread, LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    model = Post
-    success_url = '/'
-
-
-    def test_func(self):
-        bot = self.get_object()
-        print(bot.running)
-        to_save = Post.objects.get(api = bot.api)
-        to_save.running = False
-        to_save.save()
-        print(bot.running)
-        bot_p = telebot.TeleBot(bot.api)
-        BotStopper(bot_p, bot.api).start()
-        print('salamalekum')
-        return True
 
 class PassView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Post
